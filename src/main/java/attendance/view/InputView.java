@@ -1,7 +1,6 @@
 package attendance.view;
 
 import attendance.domain.Week;
-import attendance.util.ErrorMessage;
 import camp.nextstep.edu.missionutils.Console;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
@@ -33,39 +32,11 @@ public class InputView {
         return Console.readLine();
     }
 
-    public LocalDateTime readAttendanceTime() {
+    public List<Integer> readAttendanceTime() {
         printInputMessage("등교 시간을 입력해 주세요");
-        List<Integer> rawInputTime = Arrays.stream(Console.readLine().split(":"))
+        return Arrays.stream(Console.readLine().split(":"))
                 .map(Integer::parseInt)
                 .toList();
-        validateTime(rawInputTime);
-        LocalDateTime now = DateTimes.now();
-        LocalDateTime attendanceTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
-                rawInputTime.get(0), rawInputTime.get(1));
-        validateNotHoliday(attendanceTime);
-        validateNotOpen(attendanceTime);
-        return attendanceTime;
-    }
-
-    private void validateNotOpen(LocalDateTime attendanceTime) {
-        if (attendanceTime.getHour() >= 8) {
-            throw new IllegalArgumentException(ErrorMessage.PREFIX + "캠퍼스 운영 시간에만 출석이 가능합니다.");
-        }
-    }
-
-    private void validateNotHoliday(LocalDateTime attendanceTime) {
-        List<Integer> holidays = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
-        if (holidays.contains(attendanceTime.getDayOfMonth())) {
-            throw new IllegalArgumentException(ErrorMessage.PREFIX +
-                    attendanceTime.getMonthValue() + "월 " + attendanceTime.getDayOfMonth() + "일 "
-                    + Week.from(attendanceTime.getDayOfWeek().toString()) + "은 등교일이 아닙니다.");
-        }
-    }
-
-    private void validateTime(List<Integer> rawTime) {
-        if (rawTime.get(0) < 0 && rawTime.get(0) > 24) {
-            throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
-        }
     }
 
     public String readNameForUpdate() {

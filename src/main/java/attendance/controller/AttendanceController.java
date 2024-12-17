@@ -40,10 +40,13 @@ public class AttendanceController {
     private void attendCrew() {
         String name = inputView.readNickname();
         attendanceService.isInCrew(name);
-        LocalDateTime attendanceTime = inputView.readAttendanceTime();
+        
+        List<Integer> rawAttendanceTime = inputView.readAttendanceTime();
+        LocalDateTime attendanceTime = attendanceService.parseAttendanceTime(rawAttendanceTime);
 
         Crew crew = new Crew(name, attendanceTime);
         Crew attendedCrew = attendanceService.attendCrew(crew);
+
         outputView.printAttendResult(attendedCrew);
     }
 
