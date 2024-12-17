@@ -1,19 +1,17 @@
 package attendance.view;
 
-import attendance.domain.Today;
 import attendance.domain.Week;
-import attendance.external.TodayImpl;
 import attendance.util.ErrorMessage;
 import camp.nextstep.edu.missionutils.Console;
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
 public class InputView {
 
-    private final Today today = new TodayImpl();
-
-    public String readCommand(LocalDateTime now) {
+    public String readCommand() {
+        LocalDateTime now = DateTimes.now();
         printInputMessage(
                 "오늘은 " + now.getMonthValue() + "월 " + now.getDayOfMonth() + "일 "
                         + Week.from(now.getDayOfWeek().toString()) + "입니다. "
@@ -37,13 +35,13 @@ public class InputView {
 
     public LocalDateTime readAttendanceTime() {
         printInputMessage("등교 시간을 입력해 주세요");
-        List<Integer> rawTime = Arrays.stream(Console.readLine().split(":"))
+        List<Integer> rawInputTime = Arrays.stream(Console.readLine().split(":"))
                 .map(Integer::parseInt)
                 .toList();
-        validateTime(rawTime);
-        LocalDateTime now = today.getToday();
+        validateTime(rawInputTime);
+        LocalDateTime now = DateTimes.now();
         LocalDateTime attendanceTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
-                rawTime.get(0), rawTime.get(1));
+                rawInputTime.get(0), rawInputTime.get(1));
         validateNotHoliday(attendanceTime);
         validateNotOpen(attendanceTime);
         return attendanceTime;

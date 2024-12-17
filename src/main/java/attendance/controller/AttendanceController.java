@@ -6,7 +6,6 @@ import attendance.service.AttendanceService;
 import attendance.util.ErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class AttendanceController {
     }
 
     public void run() {
-        String command = inputView.readCommand(DateTimes.now());
+        String command = inputView.readCommand();
         execute(command);
     }
 
@@ -34,8 +33,8 @@ public class AttendanceController {
             case "4" -> findDanger();
             case "Q" -> {
             }
+            default -> throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
-        throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
     }
 
     private void attendCrew() {
@@ -64,7 +63,7 @@ public class AttendanceController {
 
     private void findHistory() {
         String name = inputView.readNickname();
-        List<Crew> histories = attendanceService.findHistoryOf(name);
+        List<Crew> histories = attendanceService.findCrews(name);
         outputView.printHistories(histories);
     }
 
