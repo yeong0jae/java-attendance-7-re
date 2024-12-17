@@ -1,7 +1,5 @@
 package attendance.controller;
 
-import static attendance.controller.RetryController.retryUntilValid;
-
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.service.AttendanceService;
@@ -37,28 +35,22 @@ public class AttendanceController {
             case "Q" -> {
             }
         }
-        throw new IllegalArgumentException(ErrorMessage.PREFIX
-                + "잘못된 형식을 입력하였습니다.");
+        throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
     }
 
     private void attendCrew() {
-        String nickName = retryUntilValid(() -> {
-            String name = inputView.readNickname();
-            attendanceService.isInCrew(name);
-            return name;
-        });
-        LocalDateTime attendanceTime = retryUntilValid(inputView::readAttendanceTime);
-        
-        Crew crew = new Crew(nickName, attendanceTime);
+        String name = inputView.readNickname();
+        attendanceService.isInCrew(name);
+        LocalDateTime attendanceTime = inputView.readAttendanceTime();
+
+        Crew crew = new Crew(name, attendanceTime);
         Crew attendedCrew = attendanceService.attendCrew(crew);
         outputView.printAttendResult(attendedCrew);
     }
 
     private void updateCrew() {
-        List<Crew> crews = retryUntilValid(() -> {
-            String name = inputView.readNameForUpdate();
-            return attendanceService.findCrews(name);
-        });
+        String name = inputView.readNameForUpdate();
+        List<Crew> crews = attendanceService.findCrews(name);
 
         int dateForUpdate = inputView.readDateForUpdate();
         Crew crew = attendanceService.findCrewByDate(crews, dateForUpdate);
