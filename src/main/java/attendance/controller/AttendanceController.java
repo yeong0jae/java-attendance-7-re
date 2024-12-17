@@ -38,14 +38,15 @@ public class AttendanceController {
     }
 
     private void attendCrew() {
+        attendanceService.isHoliday();
+
         String name = inputView.readNickname();
         attendanceService.isInCrew(name);
-        
+
         List<Integer> rawAttendanceTime = inputView.readAttendanceTime();
         LocalDateTime attendanceTime = attendanceService.parseAttendanceTime(rawAttendanceTime);
 
-        Crew crew = new Crew(name, attendanceTime);
-        Crew attendedCrew = attendanceService.attendCrew(crew);
+        Crew attendedCrew = attendanceService.attendCrew(name, attendanceTime);
 
         outputView.printAttendResult(attendedCrew);
     }

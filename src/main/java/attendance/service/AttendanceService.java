@@ -16,7 +16,8 @@ public class AttendanceService {
         this.crews = crews;
     }
 
-    public Crew attendCrew(Crew crew) {
+    public Crew attendCrew(String name, LocalDateTime rawAttendanceTime) {
+        Crew crew = new Crew(name, rawAttendanceTime);
         return crews.addCrew(crew);
     }
 
@@ -53,7 +54,6 @@ public class AttendanceService {
         LocalDateTime attendanceTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
                 rawAttendanceTime.get(0), rawAttendanceTime.get(1));
 
-        validateNotHoliday(attendanceTime);
         validateNotOpen(attendanceTime);
         return attendanceTime;
     }
@@ -62,23 +62,31 @@ public class AttendanceService {
         if (rawAttendanceTime.get(0) < 0 || rawAttendanceTime.get(0) > 24) {
             throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
-        if (rawAttendanceTime.get(1) < 0 || rawAttendanceTime.get(1) > 60) {
+        if (rawAttendanceTime.get(1) < 0 || rawAttendanceTime.get(1) > 59) {
             throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
     }
 
     private void validateNotOpen(LocalDateTime attendanceTime) {
-        if (attendanceTime.getHour() >= 8) {
+        LocalDateTime openTime = LocalDateTime.of(
+                attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
+                8, 0);
+        LocalDateTime closeTime = LocalDateTime.of(
+                attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
+                23, 0);
+        if (attendanceTime.isBefore(openTime) || attendanceTime.isAfter(closeTime)) {
             throw new IllegalArgumentException(ErrorMessage.PREFIX + "캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
     }
 
-    private void validateNotHoliday(LocalDateTime attendanceTime) {
+    public void isHoliday() {
+        LocalDateTime now = DateTimes.now();
+
         List<Integer> holidays = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
-        if (holidays.contains(attendanceTime.getDayOfMonth())) {
+        if (holidays.contains(now.getDayOfMonth())) {
             throw new IllegalArgumentException(ErrorMessage.PREFIX +
-                    attendanceTime.getMonthValue() + "월 " + attendanceTime.getDayOfMonth() + "일 "
-                    + Week.from(attendanceTime.getDayOfWeek().toString()) + "은 등교일이 아닙니다.");
+                    now.getMonthValue() + "월 " + now.getDayOfMonth() + "일 "
+                    + Week.from(now.getDayOfWeek().toString()) + "은 등교일이 아닙니다.");
         }
     }
 }
