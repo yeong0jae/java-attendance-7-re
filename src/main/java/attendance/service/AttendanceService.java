@@ -38,13 +38,6 @@ public class AttendanceService {
         return crews.findCrewByDate(name, dateForUpdate);
     }
 
-    public void findDangerCrews() {
-        List<String> crewNames = crews.getCrews().stream()
-                .map(Crew::getName)
-                .distinct()
-                .toList();
-    }
-
     public LocalDateTime parseAttendanceTime(List<Integer> rawAttendanceTime) {
         validateTime(rawAttendanceTime);
         LocalDateTime now = DateTimes.now();
@@ -75,8 +68,64 @@ public class AttendanceService {
     public AttendCount findCrewWarnings(List<Crew> crewHistories) {
         AttendCount attendCount = new AttendCount();
 
-        crewHistories.forEach(crewHistory ->
-                attendCount.count(crewHistory.getAttendType()));
+        crewHistories.forEach(crewHistory -> {
+            attendCount.count(crewHistory.getAttendType());
+            attendCount.setName(crewHistory.getName());
+        });
         return attendCount;
     }
+
+    public List<String> findUniqueCrewNames() {
+        return crews.findUniqueCrewNames();
+    }
+
+    public AttendCount findWarningInfo(String name) {
+        List<Crew> crewHistories = crews.findCrewsByName(name);
+        return findCrewWarnings(crewHistories);
+    }
+
+    public List<AttendCount> findCrewsWarnings(List<String> uniqueCrewNames) {
+        return uniqueCrewNames.stream()
+                .map(this::findWarningInfo)
+                .sorted(this::compareAttendCounts)
+                .toList();
+    }
+
+    private int compareAttendCounts(AttendCount count1, AttendCount count2) {
+        int statusComparison = compareByStatus(count1, count2);
+        if (statusComparison != 0) {
+            return statusComparison;
+        }
+
+        int absenceComparison = compareByAbsence(count1, count2);
+        if (absenceComparison != 0) {
+            return absenceComparison;
+        }
+
+        int totalAbsenceComparison = compareByTotalAbsence(count1, count2);
+        if (totalAbsenceComparison != 0) {
+            return totalAbsenceComparison;
+        }
+
+        return compareByName(count1, count2);
+    }
+
+    private int compareByStatus(AttendCount count1, AttendCount count2) {
+        return Integer.compare(count2.getStatus().getPriority(), count1.getStatus().getPriority());
+    }
+
+    private int compareByAbsence(AttendCount count1, AttendCount count2) {
+        return Integer.compare(count2.getAbsenceCount(), count1.getAbsenceCount());
+    }
+
+    private int compareByTotalAbsence(AttendCount count1, AttendCount count2) {
+        int totalAbsence1 = count1.getAbsenceCount() + count1.getLateCount();
+        int totalAbsence2 = count2.getAbsenceCount() + count2.getLateCount();
+        return Integer.compare(totalAbsence2, totalAbsence1);
+    }
+
+    private int compareByName(AttendCount count1, AttendCount count2) {
+        return count1.getName().compareTo(count2.getName());
+    }
+    
 }

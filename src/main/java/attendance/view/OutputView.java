@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.AttendCount;
 import attendance.domain.AttendType;
 import attendance.domain.Crew;
+import attendance.domain.CrewStatus;
 import attendance.domain.Week;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,10 +64,24 @@ public class OutputView {
         System.out.println("지각: " + attendCount.getLateCount() + "회");
         System.out.println("결석: " + attendCount.getAbsenceCount() + "회");
         System.out.println();
-        String status = attendCount.getStatus();
-        if (!status.isEmpty()) {
-            System.out.println(status);
+        CrewStatus status = attendCount.findStatus();
+        if (!status.isNone()) {
+            System.out.println(status.getStatus() + " 대상자");
         }
+        System.out.println();
+    }
+
+    public void printWarningCrew(AttendCount attendCount) {
+        System.out.println("- " + attendCount.getName() + ": " + "결석 " + attendCount.getAbsenceCount() + "회,"
+                + " 지각 " + attendCount.getLateCount() + "회" + " (" + attendCount.findStatus().toString().substring(0, 2)
+                + ")");
+    }
+
+    public void printWarningCrews(List<AttendCount> attendCounts) {
+        attendCounts.forEach(this::printWarningCrew);
+    }
+
+    public void lineSeparate() {
         System.out.println();
     }
 }

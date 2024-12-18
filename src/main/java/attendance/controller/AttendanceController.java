@@ -33,7 +33,7 @@ public class AttendanceController {
             case "1" -> attendCrew();
             case "2" -> updateCrew();
             case "3" -> findHistory();
-            case "4" -> findDanger();
+            case "4" -> findWarningCrews();
         }
     }
 
@@ -75,8 +75,13 @@ public class AttendanceController {
         outputView.printAttendCount(attendCount);
     }
 
-    private void findDanger() {
-        attendanceService.findDangerCrews();
+    private void findWarningCrews() {
+        List<String> uniqueCrewNames = attendanceService.findUniqueCrewNames();
+
+        List<AttendCount> attendCounts = attendanceService.findCrewsWarnings(uniqueCrewNames);
+        outputView.printWarningCrews(attendCounts);
+
+        outputView.lineSeparate();
     }
 
 }

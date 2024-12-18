@@ -43,7 +43,7 @@ public class Crews {
                 });
     }
 
-    private List<String> findUniqueCrewNames() {
+    public List<String> findUniqueCrewNames() {
         return crews.stream()
                 .map(Crew::getName)
                 .distinct()
