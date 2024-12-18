@@ -22,6 +22,12 @@ public class Crew {
         this.attendType = judgeAttendType();
     }
 
+    public Crew(String name, LocalDateTime attendanceTime, AttendType attendType) {
+        this.name = name;
+        this.attendanceTime = attendanceTime;
+        this.attendType = attendType;
+    }
+
     public AttendType getAttendType() {
         return attendType;
     }

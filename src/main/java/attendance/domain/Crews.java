@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.util.ErrorMessage;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -9,7 +10,44 @@ public class Crews {
 
     public Crews(List<Crew> crews) {
         this.crews = crews;
+        addAbsentHistories();
+        sortCrews();
+    }
+
+    private void sortCrews() {
         crews.sort(Comparator.comparing(Crew::getAttendanceTime));
+    }
+
+    private void addAbsentHistories() {
+        List<String> uniqueCrewNames = findUniqueCrewNames();
+
+        uniqueCrewNames.forEach(uniqueCrewName -> {
+            List<Crew> crewHistories = findCrewsByName(uniqueCrewName);
+            addAbsentHistory(crewHistories);
+        });
+    }
+
+    private void addAbsentHistory(List<Crew> crewHistories) {
+        List<Integer> weekdays = Calender.getWeekdaysToToday();
+
+        weekdays.stream()
+                .filter(weekday -> crewHistories.stream()
+                        .noneMatch(crewHistory -> crewHistory.getAttendanceTime().getDayOfMonth() == weekday))
+                .forEach(weekday -> {
+                    Crew absentCrew = new Crew(
+                            crewHistories.getFirst().getName(),
+                            LocalDateTime.of(2024, 12, weekday, 0, 0),
+                            AttendType.NONE
+                    );
+                    crews.add(absentCrew);
+                });
+    }
+
+    private List<String> findUniqueCrewNames() {
+        return crews.stream()
+                .map(Crew::getName)
+                .distinct()
+                .toList();
     }
 
     public Crew addCrew(Crew crew) {
@@ -29,7 +67,7 @@ public class Crews {
         }
     }
 
-    public List<Crew> findCrews(String name) {
+    public List<Crew> findCrewsByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.getName().equals(name))
                 .toList();
@@ -41,5 +79,9 @@ public class Crews {
                 .filter(crew -> crew.getAttendanceTime().getDayOfMonth() == dateForUpdate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.PREFIX + "해당 날짜에 출석한 기록이 없습니다."));
+    }
+
+    public boolean isNotIn(Crew crew) {
+        return !crews.contains(crew);
     }
 }

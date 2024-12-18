@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.domain.AttendCount;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.service.AttendanceService;
@@ -66,8 +67,12 @@ public class AttendanceController {
 
     private void findHistory() {
         String name = inputView.readNickname();
-        List<Crew> histories = attendanceService.findCrews(name);
-        outputView.printHistories(histories);
+        List<Crew> crewHistories = attendanceService.findCrewHistories(name);
+
+        outputView.printHistories(crewHistories);
+
+        AttendCount attendCount = attendanceService.findCrewWarnings(crewHistories);
+        outputView.printAttendCount(attendCount);
     }
 
     private void findDanger() {

@@ -1,5 +1,6 @@
 package attendance.service;
 
+import attendance.domain.AttendCount;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.domain.Week;
@@ -25,8 +26,8 @@ public class AttendanceService {
         crews.isIn(name);
     }
 
-    public List<Crew> findCrews(String name) {
-        return crews.findCrews(name);
+    public List<Crew> findCrewHistories(String name) {
+        return crews.findCrewsByName(name);
     }
 
     public Crew changeAttendanceTime(Crew crew, List<Integer> updateTime) {
@@ -69,5 +70,13 @@ public class AttendanceService {
                     now.getMonthValue() + "월 " + now.getDayOfMonth() + "일 "
                     + Week.from(now.getDayOfWeek().toString()) + "은 등교일이 아닙니다.");
         }
+    }
+
+    public AttendCount findCrewWarnings(List<Crew> crewHistories) {
+        AttendCount attendCount = new AttendCount();
+
+        crewHistories.forEach(crewHistory ->
+                attendCount.count(crewHistory.getAttendType()));
+        return attendCount;
     }
 }
