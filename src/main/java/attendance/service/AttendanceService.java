@@ -67,17 +67,6 @@ public class AttendanceService {
         }
     }
 
-    private void validateNotOpen(LocalDateTime attendanceTime) {
-        LocalDateTime openTime = LocalDateTime.of(
-                attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
-                8, 0);
-        LocalDateTime closeTime = LocalDateTime.of(
-                attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
-                23, 0);
-        if (attendanceTime.isBefore(openTime) || attendanceTime.isAfter(closeTime)) {
-            throw new IllegalArgumentException(ErrorMessage.PREFIX + "캠퍼스 운영 시간에만 출석이 가능합니다.");
-        }
-    }
 
     public void isHoliday() {
         LocalDateTime now = DateTimes.now();
