@@ -3,7 +3,6 @@ package attendance.view;
 import attendance.domain.Crew;
 import attendance.domain.Week;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class OutputView {
@@ -15,6 +14,15 @@ public class OutputView {
                 + Week.from(attendTime.getDayOfWeek().toString()) + " "
                 + String.format("%02d", attendTime.getHour()) + ":" + String.format("%02d", attendTime.getMinute())
                 + " (" + attendedCrew.getAttendType().getAttendType() + ")");
+    }
+
+    public void printAttendResultNoLineSeparate(Crew attendedCrew) {
+        LocalDateTime attendTime = attendedCrew.getAttendanceTime();
+
+        System.out.print(attendTime.getMonthValue() + "월 " + attendTime.getDayOfMonth() + "일 "
+                + Week.from(attendTime.getDayOfWeek().toString()) + " "
+                + String.format("%02d", attendTime.getHour()) + ":" + String.format("%02d", attendTime.getMinute())
+                + " (" + attendedCrew.getAttendType().getAttendType() + ") ");
     }
 
     public void printHistories(List<Crew> histories) {
@@ -29,20 +37,12 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printUpdateCrew(Crew preCrew, Crew crew) {
-        LocalDateTime attendTime = preCrew.getAttendanceTime();
+    public void printUpdateTime(Crew updatedCrew) {
+        LocalDateTime updatedTime = updatedCrew.getAttendanceTime();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm");
-        String minute = attendTime.format(formatter);
-
-        System.out.print(attendTime.getMonthValue() + "월 " + attendTime.getDayOfMonth() + "일 "
-                + Week.from(attendTime.getDayOfWeek().toString()) + " "
-                + attendTime.getHour() + ":" + minute
-                + " (" + preCrew.getAttendType().getAttendType() + ") ");
-
-        LocalDateTime newTime = crew.getAttendanceTime();
-        String newMinute = newTime.format(formatter);
         System.out.println(
-                "-> " + newTime.getHour() + ":" + newMinute + " (" + crew.getAttendType().getAttendType() + ")");
+                "-> " + String.format("%02d", updatedTime.getHour()) + ":" + String.format("%02d",
+                        updatedTime.getMinute())
+                        + " (" + updatedCrew.getAttendType().getAttendType() + ")");
     }
 }

@@ -33,11 +33,8 @@ public class AttendanceService {
         return crew.updateAttendanceTime(updateTime);
     }
 
-    public Crew findCrewByDate(List<Crew> crews, int dateForUpdate) {
-        return crews.stream()
-                .filter(crew -> crew.getAttendanceTime().getDayOfMonth() == dateForUpdate)
-                .findFirst()
-                .get();
+    public Crew findCrewByDate(String name, int dateForUpdate) {
+        return crews.findCrewByDate(name, dateForUpdate);
     }
 
     public void findDangerCrews() {
@@ -62,7 +59,7 @@ public class AttendanceService {
             throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
     }
-    
+
     public void isHoliday() {
         LocalDateTime now = DateTimes.now();
 

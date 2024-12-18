@@ -51,10 +51,9 @@ public class InputView {
 
     public List<Integer> readChangeDate() {
         printInputMessage("언제로 변경하겠습니까?");
-        List<Integer> rawTime = Arrays.stream(Console.readLine().split(":"))
+        return Arrays.stream(Console.readLine().split(":"))
                 .map(Integer::parseInt)
                 .toList();
-        return rawTime;
     }
 
 }

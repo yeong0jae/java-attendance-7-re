@@ -52,16 +52,16 @@ public class AttendanceController {
 
     private void updateCrew() {
         String name = inputView.readNameForUpdate();
-        List<Crew> crews = attendanceService.findCrews(name);
+        attendanceService.isInCrew(name);
 
         int dateForUpdate = inputView.readDateForUpdate();
-        Crew crew = attendanceService.findCrewByDate(crews, dateForUpdate);
-        Crew preCrew = new Crew(crew.getName(), crew.getAttendanceTime());
+        List<Integer> rawChangeDate = inputView.readChangeDate();
 
-        List<Integer> rawDate = inputView.readChangeDate();
-        attendanceService.changeAttendanceTime(crew, rawDate);
+        Crew crew = attendanceService.findCrewByDate(name, dateForUpdate);
+        outputView.printAttendResultNoLineSeparate(crew);
 
-        outputView.printUpdateCrew(preCrew, crew);
+        Crew updatedCrew = attendanceService.changeAttendanceTime(crew, rawChangeDate);
+        outputView.printUpdateTime(updatedCrew);
     }
 
     private void findHistory() {

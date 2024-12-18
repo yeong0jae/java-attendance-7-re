@@ -21,7 +21,7 @@ public enum Week {
         return valueOf(dayOfWeek).dayOfWeek;
     }
 
-    public static boolean isMonday(LocalDateTime now) {
-        return now.getDayOfWeek().toString().equals(valueOf("MONDAY").dayOfWeek);
+    public static boolean isMonday(LocalDateTime attendanceTime) {
+        return attendanceTime.getDayOfWeek().toString().equals(MONDAY.name());
     }
 }

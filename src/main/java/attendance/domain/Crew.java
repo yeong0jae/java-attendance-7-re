@@ -6,12 +6,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Crew {
-
     private static final Integer OPEN_TIME = 8;
     private static final Integer OPEN_MINUTE = 0;
     private static final Integer CLOSE_TIME = 23;
     private static final Integer CLOSE_MINUTE = 0;
-    
+
     private final String name;
     private LocalDateTime attendanceTime;
     private AttendType attendType;
@@ -42,26 +41,25 @@ public class Crew {
     private AttendType judgeAttendType() {
         boolean isMonday = Week.isMonday(attendanceTime);
         if (isMonday) {
-            LocalDateTime shouldTime = LocalDateTime.of(
+            LocalDateTime passTime = LocalDateTime.of(
                     attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
                     13, 0);
-            return getLate(shouldTime);
+            return getLate(passTime);
         }
-        LocalDateTime shouldTime = LocalDateTime.of(
+        LocalDateTime passTime = LocalDateTime.of(
                 attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
                 10, 0);
-        return getLate(shouldTime);
+        return getLate(passTime);
     }
 
-    private AttendType getLate(LocalDateTime shouldTime) {
-        if (shouldTime.isBefore(attendanceTime)) {
-            if (Duration.between(shouldTime, attendanceTime).getSeconds() > 1800) {
+    private AttendType getLate(LocalDateTime passTime) {
+        if (attendanceTime.isAfter(passTime)) {
+            if (Duration.between(passTime, attendanceTime).getSeconds() > 1800) {
                 return AttendType.ABSENCE;
             }
-            if (Duration.between(shouldTime, attendanceTime).getSeconds() > 300) {
+            if (Duration.between(passTime, attendanceTime).getSeconds() > 300) {
                 return AttendType.LATE;
             }
-            return AttendType.PASS;
         }
         return AttendType.PASS;
     }
@@ -79,6 +77,7 @@ public class Crew {
                 attendanceTime.getYear(), attendanceTime.getMonth(),
                 attendanceTime.getDayOfMonth(), updateTime.get(0), updateTime.get(1)
         );
-        return new Crew(name, attendanceTime);
+        this.attendType = judgeAttendType();
+        return this;
     }
 }

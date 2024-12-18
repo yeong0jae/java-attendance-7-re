@@ -34,4 +34,12 @@ public class Crews {
                 .filter(crew -> crew.getName().equals(name))
                 .toList();
     }
+
+    public Crew findCrewByDate(String name, int dateForUpdate) {
+        return crews.stream()
+                .filter(crew -> crew.getName().equals(name))
+                .filter(crew -> crew.getAttendanceTime().getDayOfMonth() == dateForUpdate)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.PREFIX + "해당 날짜에 출석한 기록이 없습니다."));
+    }
 }
