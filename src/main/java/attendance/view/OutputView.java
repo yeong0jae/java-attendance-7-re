@@ -73,7 +73,7 @@ public class OutputView {
 
     public void printWarningCrew(AttendCount attendCount) {
         System.out.println("- " + attendCount.getName() + ": " + "결석 " + attendCount.getAbsenceCount() + "회,"
-                + " 지각 " + attendCount.getLateCount() + "회" + " (" + attendCount.findStatus().toString().substring(0, 2)
+                + " 지각 " + attendCount.getLateCount() + "회" + " (" + attendCount.findStatus().getStatus()
                 + ")");
     }
 
