@@ -11,12 +11,9 @@ public class OutputView {
     public void printAttendResult(Crew attendedCrew) {
         LocalDateTime attendTime = attendedCrew.getAttendanceTime();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mm");
-        String minute = attendTime.format(formatter);
-
         print(attendTime.getMonthValue() + "월 " + attendTime.getDayOfMonth() + "일 "
                 + Week.from(attendTime.getDayOfWeek().toString()) + " "
-                + attendTime.getHour() + ":" + minute
+                + String.format("%02d", attendTime.getHour()) + ":" + String.format("%02d", attendTime.getMinute())
                 + " (" + attendedCrew.getAttendType().getAttendType() + ")");
     }
 

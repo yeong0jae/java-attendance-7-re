@@ -49,13 +49,9 @@ public class AttendanceService {
 
     public LocalDateTime parseAttendanceTime(List<Integer> rawAttendanceTime) {
         validateTime(rawAttendanceTime);
-
         LocalDateTime now = DateTimes.now();
-        LocalDateTime attendanceTime = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
+        return LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(),
                 rawAttendanceTime.get(0), rawAttendanceTime.get(1));
-
-        validateNotOpen(attendanceTime);
-        return attendanceTime;
     }
 
     private void validateTime(List<Integer> rawAttendanceTime) {
@@ -66,8 +62,7 @@ public class AttendanceService {
             throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
     }
-
-
+    
     public void isHoliday() {
         LocalDateTime now = DateTimes.now();
 
