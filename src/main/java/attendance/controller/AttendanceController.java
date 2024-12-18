@@ -3,7 +3,6 @@ package attendance.controller;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.service.AttendanceService;
-import attendance.util.ErrorMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
@@ -21,8 +20,11 @@ public class AttendanceController {
     }
 
     public void run() {
-        String command = inputView.readCommand();
-        execute(command);
+        String command;
+        do {
+            command = inputView.readCommand();
+            execute(command);
+        } while (!command.equals("Q"));
     }
 
     private void execute(String command) {
@@ -31,9 +33,6 @@ public class AttendanceController {
             case "2" -> updateCrew();
             case "3" -> findHistory();
             case "4" -> findDanger();
-            case "Q" -> {
-            }
-            default -> throw new IllegalArgumentException(ErrorMessage.PREFIX + "잘못된 형식을 입력하였습니다.");
         }
     }
 
