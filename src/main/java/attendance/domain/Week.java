@@ -24,6 +24,6 @@ public enum Week {
     }
 
     public static boolean isMonday(LocalDateTime now) {
-        return now.getDayOfWeek().toString().equals("MONDAY");
+        return now.getDayOfWeek().toString().equals(valueOf("MONDAY").dayOfWeek);
     }
 }

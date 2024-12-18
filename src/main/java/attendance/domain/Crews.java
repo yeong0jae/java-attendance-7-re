@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.util.ErrorMessage;
+import java.util.Comparator;
 import java.util.List;
 
 public class Crews {
@@ -8,10 +9,12 @@ public class Crews {
 
     public Crews(List<Crew> crews) {
         this.crews = crews;
+        crews.sort(Comparator.comparing(Crew::getAttendanceTime));
     }
 
     public Crew addCrew(Crew crew) {
         crews.add(crew);
+        crews.sort(Comparator.comparing(Crew::getAttendanceTime));
         return crew;
     }
 
